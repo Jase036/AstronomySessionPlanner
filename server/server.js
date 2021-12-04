@@ -28,5 +28,7 @@ app.use("/", express.static(__dirname + "/"));
 
 // endpoints
 
+// gets our weather forecast data
+app.get('forecast/:location', getWeather)
 
 app.listen(PORT, () => console.info(`Listening on port ${PORT}`));
