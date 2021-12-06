@@ -1,17 +1,17 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { UserProvider } from "./components/context/UserContext";
 
 
 ReactDOM.render(
   <Auth0Provider
-    domain="dev-3v3jf16o.us.auth0.com"
-    clientId="DwbBaIe7YnyJStRuq7XcsDx6pfLUu1fz"
+    domain= {process.env.REACT_APP_AUTH0_ID}
+    clientId=""
     redirectUri={window.location.origin}>
-    
-      <App />
-    
+      <UserProvider>
+        <App />
+      </UserProvider>
     </Auth0Provider>,
   document.getElementById('root')
 );
