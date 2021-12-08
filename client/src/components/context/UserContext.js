@@ -6,7 +6,8 @@ export const UserContext = createContext(null);
 
 const initialState = {
     hasLoaded: false,
-    location: {lat:'', long: ''},
+    location: {},
+    forecast: {}
 };
 
 const reducer = (state, action) => {
@@ -26,6 +27,21 @@ const reducer = (state, action) => {
             };
         }
 
+        case "set-location": {
+            return {
+                ...state,
+                location: action.location,
+            };
+        }
+
+        case "set-forecast": {
+            return {
+                ...state,
+                forecast: action.forecast,
+            };
+        }
+
+
         default:
             throw new Error(`Unrecognized action: ${action.type}`);
     }
@@ -34,7 +50,7 @@ const reducer = (state, action) => {
 export const UserProvider = ({ children }) => {
 
     const [state, dispatch] = useReducer(reducer, initialState);
-
+    console.log(state)
     //Loading state will allow us to use a loading component during async operations in other components
     const setLoadingState = () => {
         dispatch({
@@ -51,11 +67,32 @@ export const UserProvider = ({ children }) => {
         });
     };
 
+    //add location data to state
+    const setLocation = (data) => {
+        console.log(data)
+        dispatch({
+        type: "set-location",
+        location: data
+        });
+    };
+
+    //Store weather forecast in state to avoid unneeded fetches to weather API
+    const setForecast = (data) => {
+        console.log(data)
+        dispatch({
+        type: "set-forecast",
+        forecast: data
+        });
+    };
+
     return (
         <UserContext.Provider
             value={{
+                state,
                 setLoadingState,
-                unsetLoadingState
+                unsetLoadingState,
+                setLocation,
+                setForecast
             }}
         >
             {children}

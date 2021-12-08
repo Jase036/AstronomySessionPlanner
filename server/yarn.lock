@@ -523,6 +523,11 @@ graceful-fs@^4.1.2:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
   integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
 
+gregorian-calendar@^4.1.6:
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/gregorian-calendar/-/gregorian-calendar-4.1.6.tgz#1051b693d6a5e95483ba5f1d10646b9cf6420a03"
+  integrity sha1-EFG2k9al6VSDul8dEGRrnPZCCgM=
+
 has-flag@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz#b5d454dc2199ae225699f3467e5a07f3b955bafd"
@@ -704,6 +709,13 @@ latest-version@^5.1.0:
   integrity sha512-weT+r0kTkRQdCdYCNtkMwWXQTMEswKrFBkm4ckQOMVhhqhIMI1UT2hMj+1iigIhgSZm5gTmrRXBNoGUgaTY1xA==
   dependencies:
     package-json "^6.3.0"
+
+local-sidereal-time@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/local-sidereal-time/-/local-sidereal-time-1.0.4.tgz#cefdcbf9d4587fea4e3724fc4f7968682d73e51f"
+  integrity sha512-BWc0BrE4PqsoM7zPSwWKbW4Kjq4fOrQTJMZ2mCSzhzEdjwpKAJBnhyfoBUPrvK4TpLorypQZqaJV0wusSt3V9Q==
+  dependencies:
+    gregorian-calendar "^4.1.6"
 
 lowercase-keys@^1.0.0, lowercase-keys@^1.0.1:
   version "1.0.1"

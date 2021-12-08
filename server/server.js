@@ -4,7 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
-const {getWeather} = require("./handlers")
+const {getWeather, getAstro} = require("./handlers")
 
 const PORT = 8000;
 const app = express();
@@ -31,5 +31,8 @@ app.use("/", express.static(__dirname + "/"));
 
 // gets our weather forecast data
 app.get('/forecast/', getWeather)
+
+// gets our astro catalog data
+app.get('/astro/', getAstro)
 
 app.listen(PORT, () => console.info(`Listening on port ${PORT}`));
