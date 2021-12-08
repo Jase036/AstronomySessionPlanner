@@ -50,11 +50,25 @@ const getWeather = async (req, res) => {
 
 
 const getAstro = async (req, res) => {
-    const {lat, lon} = req.query;
-
 
     const client = new MongoClient(MONGO_URI, options);
     const db = client.db("AstroPlanner");
+
+    const { lat, lon } = req.query;
+    let { start, limit } = req.query;
+
+    if (!start) {
+        start = 0
+    } else {
+        start = Number(start);
+    }
+
+    // The limit represents the number of objects from starting position so we add the starting position.
+    // If no limit query is passed we fallback to 25.
+    if (!limit) {
+       limit = start + 25;
+    } else {limit = Number(limit) + start  }
+    
     
     try {
         await client.connect();
@@ -98,6 +112,8 @@ const getAstro = async (req, res) => {
         //will rise above the horizon during our session
         
         for (let i=0; i<sessionLength; i++){
+            let loopTime = new Date()
+            loopTime.setHours(timeStart.getHours() + i)
 
             //We lift these variables to avoid scope issues
             let raH=0;
@@ -124,17 +140,20 @@ const getAstro = async (req, res) => {
                 }
 
                 //create a new instance of the converter class and pass our data
-                const AltAzConverter = new RaDecToAltAz(raH,decH, timeStart, lat,lon)
-                console.log(AltAzConverter.raDecToAltAz().alt)
+                const AltAzConverter = new RaDecToAltAz(raH,decH, loopTime, lat,lon)
                 return AltAzConverter.raDecToAltAz().alt > 0
             })
         }
     
-
-        res.status(200).json({ status: 200, data: filteredAstro });
-        } else {
-        res.status(404).json({ status: 404, error: err.stack });
+            if (filteredAstro.length !== 0) {
+                (filteredAstro.length + 1) < limit ? res.status(200).json({ status: 200, start, limit: ((limit - start) - (limit - (filteredAstro.length))),data: filteredAstro.slice(start, limit) }) : 
+                    res.status(200).json({ status: 200, start, limit: (limit - start), data: filteredAstro.slice(start, limit) })
+                    
+            } else { 
+                return res.status(404).json({ status: 404, message: "Not Found", error: err.stack });
+            }
         }
+
     } catch (err) {
         res.status(500).json({ status: 500, error: err.stack });
     }
