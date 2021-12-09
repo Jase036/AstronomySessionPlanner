@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
-const { MONGO_URI, W_APP_ID, SG_API_KEY, W_APP_KEY } = process.env;
+const { MONGO_URI, W_APP_ID, W_APP_KEY } = process.env;
 
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const RaDecToAltAz = require ("./RaDecToAltAz")
@@ -10,45 +10,6 @@ const options = {
   useUnifiedTopology: true,
 };
 
-//grab the weather data for the next 7 days
-const getWeather = async (req, res) => {
-    const {lat, lon} = req.query;
-    const end = () => {
-        const today = new Date();
-        const nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+7);
-        return nextweek;
-    }
-
-    try {
-        const forecastRequest = `http://api.weatherunlocked.com/api/forecast/${lat},${lon}?app_id=${W_APP_ID}&app_key=${W_APP_KEY}`
-        const response = await fetch(forecastRequest);
-        const data = await response.json();
-
-        // const astronomyForecastRequest = `https://api.stormglass.io/v2/astronomy/point?lat=${lat}&lng=${lon}&end=${end()}`
-        // const responseAstro = await fetch(astronomyForecastRequest, {headers: {
-        //     'Authorization': SG_API_KEY
-        // }});
-        // const dataAstro = await responseAstro.json();
-
-        // if (data && dataAstro) {
-        //     const compositeForecast = {...data, ...dataAstro.data}
-        //     res.json({ status: 200, forecast: compositeForecast})
-        // }  else { 
-        //     res.json({ status: 400, data: data, message: `No forecast data found for lat:${lat}, lon:${lon}` })
-        // }
-
-        if (data) {
-            res.json({ status: 200, forecast: data})
-        }  else { 
-            res.json({ status: 400, data: data, message: `No forecast data found for lat:${lat}, lon:${lon}` })
-        }
-    }
-    catch (err) {
-        console.log(err)
-    };
-};
-
-
 const getAstro = async (req, res) => {
 
     const client = new MongoClient(MONGO_URI, options);
@@ -57,6 +18,8 @@ const getAstro = async (req, res) => {
     const { lat, lon } = req.query;
     let { start, limit } = req.query;
 
+    // Start is starting index for the filtered astro catalog requested.
+    // If no limit query is passed we fallback to 25.
     if (!start) {
         start = 0
     } else {
@@ -144,7 +107,7 @@ const getAstro = async (req, res) => {
                 return AltAzConverter.raDecToAltAz().alt > 0
             })
         }
-    
+            //Some conditional logic to return paginated results and to handle if the limit is greater than the number of results
             if (filteredAstro.length !== 0) {
                 (filteredAstro.length + 1) < limit ? res.status(200).json({ status: 200, start, limit: ((limit - start) - (limit - (filteredAstro.length))),data: filteredAstro.slice(start, limit) }) : 
                     res.status(200).json({ status: 200, start, limit: (limit - start), data: filteredAstro.slice(start, limit) })
@@ -159,4 +122,4 @@ const getAstro = async (req, res) => {
     }
 };
 
-module.exports = {getWeather, getAstro}
+module.exports = { getAstro }

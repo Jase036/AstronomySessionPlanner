@@ -1,10 +1,10 @@
 "use strict";
 
 const express = require("express");
-const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
-const {getWeather, getAstro} = require("./handlers")
+const { getWeather } = require("./getWeather")
+const { getAstro } = require("./getAstro")
 
 const PORT = 8000;
 const app = express();
