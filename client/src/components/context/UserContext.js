@@ -1,4 +1,4 @@
-import React, {createContext, useReducer} from "react";
+import React, {createContext, useReducer, useEffect} from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 
@@ -50,7 +50,12 @@ const reducer = (state, action) => {
 export const UserProvider = ({ children }) => {
 
     const [state, dispatch] = useReducer(reducer, initialState);
-    console.log(state)
+    const session = JSON.parse(localStorage.getItem('session'))
+
+    useEffect (()=>{
+        
+    }, [])
+    
     //Loading state will allow us to use a loading component during async operations in other components
     const setLoadingState = () => {
         dispatch({

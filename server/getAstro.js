@@ -109,9 +109,7 @@ const getAstro = async (req, res) => {
         }
             //Some conditional logic to return paginated results and to handle if the limit is greater than the number of results
             if (filteredAstro.length !== 0) {
-                (filteredAstro.length + 1) < limit ? res.status(200).json({ status: 200, start, limit: ((limit - start) - (limit - (filteredAstro.length))),data: filteredAstro.slice(start, limit) }) : 
-                    res.status(200).json({ status: 200, start, limit: (limit - start), data: filteredAstro.slice(start, limit) })
-                    
+                res.status(200).json({ status: 200, data: filteredAstro })                    
             } else { 
                 return res.status(404).json({ status: 404, message: "Not Found", error: err.stack });
             }

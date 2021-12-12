@@ -2,16 +2,94 @@ import React from 'react';
 import styled from 'styled-components';
 
 
-const RenderDay = ({day}) => {
 
+const RenderDay = ({day}) => {
+    
+    let fTime=[]
+    let formattedTimeArray = []
+    day.Timeframes.forEach((timeSlotDetails)=>{
+        switch (timeSlotDetails.time.toString().length) {
+            case 1:
+                formattedTimeArray.push('00:00')
+                break;
+            case 3:
+                fTime = timeSlotDetails.time.toString().split("");
+                fTime.splice(0, 0, "0");
+                fTime.splice(2, 0, ':');
+                formattedTimeArray.push(fTime.join(''));
+                break;
+            case 4:
+                fTime = timeSlotDetails.time.toString().split("");
+                fTime.splice(2, 0, ':');
+                formattedTimeArray.push(fTime.join(''));
+                break;
+        }
+        })
+    
+    
     return(
         <Wrapper>
-            <p> Weather Forecast </p>
-            <p>{day.date}</p>
-            <p>sunrise_time{day.sunrise_time}</p>
-            <p>sunset_time{day.sunset_time}</p>
-            <p>moonrise_time{day.moonrise_time}</p>
-            <p>moonset_time{day.moonset_time}</p>
+            <VisibleAlways>
+                <div>{day.date}</div>
+                <MoonData>
+                    <p>Moon Phase img here</p>
+                    <p>illumination % here</p>
+                    <p>moonrise_time{day.moonrise_time}</p>
+                    <p>moonset_time{day.moonset_time}</p>
+                </MoonData>
+                <DataRow>
+                    {formattedTimeArray.map((timeSlot)=>{
+                            return <p key={timeSlot}>{timeSlot}</p>
+                        })
+                    }
+                </DataRow>
+                <p>sunrise_time{day.sunrise_time}</p>
+                <p>sunset_time{day.sunset_time}</p>
+            </VisibleAlways>
+            <DetailsContainer>
+                <DataGridRow>
+                    <p>Total Clouds</p>
+                    {day.Timeframes.map((timeSlotDetails)=>{
+                            return <p key={timeSlotDetails.time}>{timeSlotDetails.cloudtotal_pct}</p>
+                        })
+                    }
+                </DataGridRow>
+                <DataGridRow>
+                    <p>Prec Prob</p>
+                    {day.Timeframes.map((timeSlotDetails)=>{
+                            return <p key={timeSlotDetails.time}>{timeSlotDetails.prob_precip_pct}</p>
+                        })
+                    }
+                </DataGridRow>
+                <DataGridRow>
+                    {day.Timeframes.map((timeSlotDetails)=>{
+                            return <p key={timeSlotDetails.time}>{timeSlotDetails.temp_c}</p>
+                        })
+                    }
+                </DataGridRow>
+                <DataGridRow>
+                    <p>Visib</p>
+                    {day.Timeframes.map((timeSlotDetails)=>{
+                            return <p key={timeSlotDetails.time}>{timeSlotDetails.vis_km}</p>
+                        })
+                    }
+                </DataGridRow>
+                <DataGridRow>
+                    <p>Dew</p>
+                    {day.Timeframes.map((timeSlotDetails)=>{
+                            return <p key={timeSlotDetails.time}>{timeSlotDetails.dewpoint_c}</p>
+                        })
+                    }
+                </DataGridRow>
+                <DataGridRow>
+                    <p>Wind Spd and Dir</p>
+                    {day.Timeframes.map((timeSlotDetails)=>{
+                            return <p key={timeSlotDetails.time}>{timeSlotDetails.winddir_compass}, {timeSlotDetails.windspd_kmh}</p>
+                        })
+                    }
+                </DataGridRow>
+            </DetailsContainer>
+            
         </Wrapper>
     )
 }
@@ -41,6 +119,42 @@ const Wrapper = styled.div`
     display:flex;
     flex-direction: column;
 `
+const MoonData = styled.div`
+    display:flex;
+    flex-direction: column;
+`
+const DetailsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+
+`
+const VisibleAlways = styled.div`
+    display:flex;
+`
+const DataRow = styled.div`
+    display: flex;
+
+& p {
+    margin:5px;
+
+}
+`
+const DataGridRow = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    border: 1px solid red;
+    
+& p {
+    flex-grow: 1;
+
+}
+
+& p:nth-child(1) {
+    flex-grow: 3;
+    }
 
 
+`
 export default RenderDay;
