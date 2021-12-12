@@ -8,6 +8,7 @@ export const AstroProvider = ({ children }) => {
     
     const [astroCatalog, setAstroCatalog] = useState([]);
     const [selectedObjects, setSelectedObjects] = useState([]);
+    const [plan, setPlan] = useState({})
 
 console.log(selectedObjects)
 
@@ -17,7 +18,9 @@ console.log(selectedObjects)
                 astroCatalog, 
                 setAstroCatalog,
                 selectedObjects, 
-                setSelectedObjects
+                setSelectedObjects,
+                plan,
+                setPlan,
             }}
         >
             {children}

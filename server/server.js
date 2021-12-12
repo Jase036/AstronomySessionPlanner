@@ -5,6 +5,8 @@ const morgan = require("morgan");
 
 const { getWeather } = require("./getWeather")
 const { getAstro } = require("./getAstro")
+const { getSchedule } = require("./getSchedule")
+
 
 const PORT = 8000;
 const app = express();
@@ -34,5 +36,8 @@ app.get('/forecast/', getWeather)
 
 // gets our astro catalog data
 app.get('/astro/', getAstro)
+
+// gets our astro plan data
+app.get('/plan/', getSchedule)
 
 app.listen(PORT, () => console.info(`Listening on port ${PORT}`));

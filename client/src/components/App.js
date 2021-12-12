@@ -8,8 +8,9 @@ import Globalstyles from "./Globalstyles";
 import Catalog from './Catalog/Catalog';
 
 const data = [
-  { start_date:'2020-06-10 6:00', end_date:'2020-06-10 8:00', text:'Event 1', id: 1 },
-  { start_date:'2020-06-13 10:00', end_date:'2020-06-13 18:00', text:'Clods - 75%', id: 2, color: 'red' }
+  { start_date:'2021-12-13 6:00', end_date:'2021-12-13 10:00', text:'Event 1', id: 1 },
+  { start_date:'2021-12-13 10:00', end_date:'2021-12-13 18:00', text:'Clods - 75%', id: 2, color: 'red' },
+  { start_date:'2021-12-14 6:00', end_date:'2021-12-14 8:00', text:'Event 3', id: 3000 },
 ];
 
 const App = () => {
