@@ -2,10 +2,12 @@
 
 const express = require("express");
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
 
 const { getWeather } = require("./getWeather")
 const { getAstro } = require("./getAstro")
-const { getSchedule } = require("./getSchedule")
+const { getSchedule } = require("./getSchedule");
+const { addPlan } = require("./addPlan");
 
 
 const PORT = 8000;
@@ -26,6 +28,7 @@ app.use(function (req, res, next) {
 
 app.use(morgan("tiny"));
 app.use(express.static("./server/assets"));
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/", express.static(__dirname + "/"));
 
@@ -39,5 +42,8 @@ app.get('/astro/', getAstro)
 
 // gets our astro plan data
 app.get('/plan/', getSchedule)
+
+// post to create selected astro plan
+app.post('/add-plan/', addPlan)
 
 app.listen(PORT, () => console.info(`Listening on port ${PORT}`));

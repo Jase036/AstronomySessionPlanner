@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Spinner from '../Loading/Spinner';
 import { DataGrid } from '@mui/x-data-grid'
 
@@ -68,7 +68,7 @@ const columns = [
   
 const Catalog = () => {
     const { user, isAuthenticated, isLoading } = useAuth0
-    const {astroCatalog, setAstroCatalog, selectedObjects, setSelectedObjects} = useContext(AstroContext);
+    const {astroCatalog, setAstroCatalog, selectedObjects, setSelectedObjects, plan, setPlan} = useContext(AstroContext);
     const { state, setLoadingState, unsetLoadingState, setLocation } = useContext(UserContext);
     
 
@@ -81,8 +81,20 @@ const Catalog = () => {
     if (!state.location.lat && session) {    
         setLocation(session.location);
         lat = session.location.lat;
-        lon = session.location.lat;
+        lon = session.location.lon;
     }
+
+    setLoadingState()
+        fetch('/plan/')
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.status !== 200) {
+                console.log(data)
+            } else {
+                setPlan(data.data);
+                unsetLoadingState();
+            }
+        })
     }, []); // eslint-disable-line
 
     
@@ -116,6 +128,25 @@ const Catalog = () => {
         
     }, [state.location]); // eslint-disable-line
 
+    const createPlan = () => {
+        console.log(selectedObjects)
+        fetch("/add-plan/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(selectedObjects),
+          })
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.status !== 200) {
+            console.log(data);
+            } else {
+                navigate('/schedule/')
+            }
+        })
+    }
 
     if (!state.hasLoaded){
         return (
@@ -134,6 +165,7 @@ const Catalog = () => {
                 }}
                 
                 />
+                <button onClick={createPlan}>Create Plan!</button>
             </div>
             );
         }

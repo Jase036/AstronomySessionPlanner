@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../context/UserContext';
-import {useNavigate} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import Spinner from '../Loading/Spinner';
 import RenderDay from './RenderDay';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -13,26 +13,24 @@ const Weather = () => {
 
     let {lat, lon} = state.location
     const session = JSON.parse(localStorage.getItem('session'))
-
+    
     useEffect( () => {
     if (!state.location && session) {    
         setLocation(session.location);
-        lat = session.location.lat;
-        lon = session.location.lat;
-    }
+    } 
     }, []); // eslint-disable-line
 
     useEffect( () => {
         
-        if (!state.hasLoaded && !lat ) {
+        // if (!state.hasLoaded && !lat ) {
             
-            window.alert("Please select a location first");
-            navigate('/location')
+        //     window.alert("Please select a location first");
+        //     navigate('/location')
             
-        } 
-        else { 
+        // } 
+        // else { 
             setLoadingState()
-            fetch(`/forecast/?lat=${lat.toFixed(3)}&lon=${lon.toFixed(3)}`, {
+            fetch(`/forecast/?lat=${session.location.lat.toFixed(3)}&lon=${session.location.lon.toFixed(3)}`, {
             headers : { 
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -46,7 +44,7 @@ const Weather = () => {
             setForecast(data.forecast);
             unsetLoadingState();
             }
-        }) }
+        }) 
     
         ;
   }, [state.location]); // eslint-disable-line
@@ -57,10 +55,10 @@ const Weather = () => {
         )
     } else {
         return (
-            
             <div> 
+                <Link to={'/catalog/'}>Catalog</Link>
                 <p>Weather Forecast for Latitude:{state.location.lat} & Longitude:{state.location.lon}</p>
-            {state.forecast.Days.map((day) => {
+            {state.forecast.map((day) => {
                 console.log(day)
                 return (
                     <div key={day.date}>

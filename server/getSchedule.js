@@ -18,12 +18,16 @@ const getSchedule = async (req, res) => {
         await client.connect();
     
         const weatherSchedule = await db.collection("w_schedule").find().toArray();
+
+        const astroPlan = await db.collection("plan").find().toArray();
     
         await client.close();
     
+        const sessionPlan = weatherSchedule.concat(astroPlan)
+        
         if (weatherSchedule.length !== 0) {
         
-            res.status(200).json({ status: 200, data: weatherSchedule })                    
+            res.status(200).json({ status: 200, data: sessionPlan })                    
         } else { 
             return res.status(404).json({ status: 404, message: "Not Found", error: err.stack });
         }

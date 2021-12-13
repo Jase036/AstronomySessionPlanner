@@ -12,12 +12,6 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 //grab the weather data for the next 7 days
 const getWeather = async (req, res) => {
     const {lat, lon} = req.query;
-    const end = () => {
-        const today = new Date();
-        const nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+7);
-        console.log (nextweek.getUTCDate())
-        return nextweek.getUTCDate();
-    }
 
     try {
         const forecastRequest = `http://api.weatherunlocked.com/api/forecast/${lat},${lon}?app_id=${W_APP_ID}&app_key=${W_APP_KEY}`
@@ -44,7 +38,7 @@ const getWeather = async (req, res) => {
                     } else if (timeBlock.cloudtotal_pct > 25) {
                         color = "orange";
                     }  else if (timeBlock.cloudtotal_pct > 5) {
-                        color = "darkyellow";
+                        color = "olive";
                     } else {
                         color = "green";
                     }
@@ -90,7 +84,16 @@ const getWeather = async (req, res) => {
                             end_date = nextDay.join('-') + " 00:00"
                         }
 
-                        return {start_date, end_date, text: "Cloud Cover: " + timeBlock.cloudtotal_pct + '%', _id: (Math.floor(Math.random() * 10000) + 1), color}
+                        return {
+                            start_date, 
+                            end_date, 
+                            text: "Cloud Cover: " + timeBlock.cloudtotal_pct + '%', 
+                            id: (Math.floor(Math.random() * 10000) + 1), 
+                            color, 
+                            notes: "Low Clouds: "+timeBlock.cloud_low_pct +"\nMid Clouds: "+timeBlock.cloud_mid_pct+ "\nHigh Clouds: "+timeBlock.cloud_high_pct, 
+                            readonly:true
+                        }
+
                     } else {
                         return {delete: "delete"}
                     }
@@ -104,7 +107,8 @@ const getWeather = async (req, res) => {
     
 
         if (data && dataAstro) {
-            const compositeForecast = {...data, ...dataAstro.data}
+            const forecast = data
+            const stormglassData = dataAstro.data
 
             // connect to the client
         await client.connect();
@@ -113,14 +117,18 @@ const getWeather = async (req, res) => {
         const db = client.db('AstroPlanner');
         console.log("connected!");
 
+        await db.collection("w_schedule").drop(((err, delOK)=> console.log("Dropped!")))
         // create calendar entries for cloud cover
         await db.collection("w_schedule").insertMany(schedWeatherArray);
         
+        //await db.collection("weather").insertMany(forecast.Days);
+        // await db.collection("sg-weather").insertMany(stormglassData);
+
         console.log('Successfully added weather events to collection');
         
         client.close();
 
-            res.json({ status: 200, forecast: compositeForecast})
+            res.json({ status: 200, forecast:forecast.Days, sgForecast: stormglassData})
         }  else { 
             res.json({ status: 400, data: data, message: `No forecast data found for lat:${lat}, lon:${lon}` })
         }
