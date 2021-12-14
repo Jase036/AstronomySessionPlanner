@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import styled from "styled-components";
+import { FiUserX } from "react-icons/fi";
 
 const LogoutButton = () => {
   const { logout, isAuthenticated } = useAuth0();
@@ -10,24 +11,22 @@ const LogoutButton = () => {
       <LogOutButton
         onClick={() => logout({ returnTo: window.location.origin })}
       >
-        Log Out
+        <FiUserX />
       </LogOutButton>
     )
   );
 };
 
 const LogOutButton = styled.button`
-  padding: 8px 20px;
-  background-color: var(--cool-gray);
-  color: white;
-  border-radius: 10px;
-  border: 4px solid white;
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 24px;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  font-size: 25px;
+  font-weight:700;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  
   &:hover {
-    transition: all 0.2s ease-in-out;
     transform: scale(1.1);
   }
 `;

@@ -4,12 +4,13 @@ import {Link, useNavigate} from 'react-router-dom'
 import Spinner from '../Loading/Spinner';
 import RenderDay from './RenderDay';
 import { useAuth0 } from '@auth0/auth0-react';
+import Catalog from '../Catalog/Catalog';
 
 
 const Weather = () => {
     let navigate = useNavigate();
     const { user, isAuthenticated } = useAuth0;
-    const {state, setLoadingState, unsetLoadingState, setForecast, setLocation} = useContext(UserContext);
+    const {state, setLoadingState, unsetLoadingState, setForecast, setLocation, setSGForecast} = useContext(UserContext);
 
     let {lat, lon} = state.location
     const session = JSON.parse(localStorage.getItem('session'))
@@ -42,12 +43,14 @@ const Weather = () => {
             console.log(data);
             } else {
             setForecast(data.forecast);
+            setSGForecast(data.sgForecast)
             unsetLoadingState();
             }
         }) 
     
         ;
   }, [state.location]); // eslint-disable-line
+
 
     if (!state.hasLoaded){
         return (
@@ -57,12 +60,12 @@ const Weather = () => {
         return (
             <div> 
                 <Link to={'/catalog/'}>Catalog</Link>
-                <p>Weather Forecast for Latitude:{state.location.lat} & Longitude:{state.location.lon}</p>
+                <p>Weather Forecast for Latitude:{session.location.lat.toFixed(3)} & Longitude:{session.location.lat.toFixed(3)}</p>
             {state.forecast.map((day) => {
-                console.log(day)
+                
                 return (
                     <div key={day.date}>
-                        <RenderDay day={day}/>
+                        <RenderDay day={day} sg={state.sgForecast}/>
                     </div>
                 )
             })}

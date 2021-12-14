@@ -7,7 +7,8 @@ export const UserContext = createContext(null);
 const initialState = {
     hasLoaded: false,
     location: {},
-    forecast: {}
+    forecast: {},
+    sgForecast: []
 };
 
 const reducer = (state, action) => {
@@ -38,6 +39,13 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 forecast: action.forecast,
+            };
+        }
+
+        case "set-sgforecast": {
+            return {
+                ...state,
+                sgForecast: action.sgForecast,
             };
         }
 
@@ -83,10 +91,19 @@ export const UserProvider = ({ children }) => {
 
     //Store weather forecast in state to avoid unneeded fetches to weather API
     const setForecast = (data) => {
-        console.log(data)
+        
         dispatch({
         type: "set-forecast",
         forecast: data
+        });
+    };
+
+    //Store Strom Glass weather forecast in state to avoid unneeded fetches to weather API
+    const setSGForecast = (data) => {
+        
+        dispatch({
+        type: "set-sgforecast",
+        sgForecast: data
         });
     };
 
@@ -97,7 +114,8 @@ export const UserProvider = ({ children }) => {
                 setLoadingState,
                 unsetLoadingState,
                 setLocation,
-                setForecast
+                setForecast,
+                setSGForecast
             }}
         >
             {children}

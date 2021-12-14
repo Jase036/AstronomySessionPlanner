@@ -6,6 +6,7 @@ import Weather from './Weather/Weather';
 import AstroPlan from './Scheduler/AstroPlan';
 import Globalstyles from "./Globalstyles";
 import Catalog from './Catalog/Catalog';
+import Header from './Header/Header';
 
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
     <Router>
       <Globalstyles />
       <Wrapper>
+        <Header />
         <Routes>
           <Route path="/location" element={<LocMap />} />
           <Route path="/weather" element={<Weather />} />
@@ -26,6 +28,7 @@ const App = () => {
 
 const Wrapper = styled.div`
   display:flex;
+  flex-direction: column;
 `
 
 

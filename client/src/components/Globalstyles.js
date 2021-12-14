@@ -32,6 +32,8 @@ export default createGlobalStyle`
         font-size: 100%;
         vertical-align: baseline;
         box-sizing: border-box;
+        font-family: var(--font-family);
+        color: #fff;
     }
     /* HTML5 display-role reset for older browsers */
     article, aside, details, figcaption, figure,
@@ -39,7 +41,8 @@ export default createGlobalStyle`
         display: block;
     }
     body {
-        height:100%;
+        height:100vh;
+        background-color: #555;
     }
     ol, ul {
         list-style: none;

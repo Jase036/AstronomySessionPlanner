@@ -112,6 +112,8 @@ const AstroPlan = () => {
 const ScheduleWrapper = styled.div`
     width: 100vw;
     height: 100vh;
+    background-color: #555;
+    overflow:hidden;
 `
 
 export default AstroPlan;

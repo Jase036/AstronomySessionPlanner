@@ -14,16 +14,31 @@ const getWeather = async (req, res) => {
     const {lat, lon} = req.query;
 
     try {
+        
+        // creates a new client
+        const client = new MongoClient(MONGO_URI, options);
+    
+        // connect to the database 
+        const db = client.db('AstroPlanner');
+        await client.connect();
+        
+        let dataAstro = await db.collection("sg-weather").find().toArray();
+        
+        
+        if (dataAstro.length === 0){
+            
+            const astronomyForecastRequest = `https://api.stormglass.io/v2/astronomy/point?lat=${lat}&lng=${lon}`
+            const responseAstro = await fetch(astronomyForecastRequest, {headers: {
+                'Authorization': SG_API_KEY
+            }});
+            dataAstro = await responseAstro.json();
+
+            await db.collection("sg-weather").insertMany(dataAstro.data)
+        }
+
         const forecastRequest = `http://api.weatherunlocked.com/api/forecast/${lat},${lon}?app_id=${W_APP_ID}&app_key=${W_APP_KEY}`
         const response = await fetch(forecastRequest);
         const data = await response.json();
-
-        const astronomyForecastRequest = `https://api.stormglass.io/v2/astronomy/point?lat=${lat}&lng=${lon}`
-        const responseAstro = await fetch(astronomyForecastRequest, {headers: {
-            'Authorization': SG_API_KEY
-        }});
-        const dataAstro = await responseAstro.json();
-        
         
         let dayArray = data.Days.flatMap((Days) => {
             
@@ -102,29 +117,15 @@ const getWeather = async (req, res) => {
         })
         const schedWeatherArray = dayArray.filter(e => !e.delete)
 
-        // creates a new client
-        const client = new MongoClient(MONGO_URI, options);
-    
-
         if (data && dataAstro) {
             const forecast = data
-            const stormglassData = dataAstro.data
+            const stormglassData = dataAstro
 
-            // connect to the client
-        await client.connect();
-    
-        // connect to the database 
-        const db = client.db('AstroPlanner');
-        console.log("connected!");
-
+        
         await db.collection("w_schedule").drop(((err, delOK)=> console.log("Dropped!")))
         // create calendar entries for cloud cover
         await db.collection("w_schedule").insertMany(schedWeatherArray);
         
-        //await db.collection("weather").insertMany(forecast.Days);
-        // await db.collection("sg-weather").insertMany(stormglassData);
-
-        console.log('Successfully added weather events to collection');
         
         client.close();
 
