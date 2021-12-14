@@ -5,6 +5,7 @@ import Spinner from '../Loading/Spinner';
 import RenderDay from './RenderDay';
 import { useAuth0 } from '@auth0/auth0-react';
 import Catalog from '../Catalog/Catalog';
+import styled from 'styled-components';
 
 
 const Weather = () => {
@@ -58,20 +59,36 @@ const Weather = () => {
         )
     } else {
         return (
-            <div> 
-                <Link to={'/catalog/'}>Catalog</Link>
-                <p>Weather Forecast for Latitude:{session.location.lat.toFixed(3)} & Longitude:{session.location.lat.toFixed(3)}</p>
+            <Wrapper> 
+                <h2>Weather Forecast for Latitude: {session.location.lat.toFixed(3)} & Longitude: {session.location.lon.toFixed(3)}</h2>
             {state.forecast.map((day) => {
                 
                 return (
                     <div key={day.date}>
                         <RenderDay day={day} sg={state.sgForecast}/>
+                        <Divider></Divider>
                     </div>
                 )
             })}
-            </div>
+            </Wrapper>
         )
     }
 }
 
+const Wrapper = styled.div`
+    margin-top: 10px;
+    width: 100%;
+
+& h2{
+    margin: 10px auto;
+    text-align:center;
+}
+`
+
+const Divider = styled.div`
+    width: 95%;
+    margin: 0 auto;
+    height: 5px;
+    background-color: #ddd;
+`
 export default Weather;

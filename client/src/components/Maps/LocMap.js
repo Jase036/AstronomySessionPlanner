@@ -1,4 +1,5 @@
 import React, { useRef, useContext, useState } from "react";
+import styled from "styled-components";
 import GoogleMapReact from 'google-map-react';
 import { bootstrapURLKeys } from "./bootstrapURLKeys";
 import { UserContext } from "../context/UserContext"
@@ -111,8 +112,8 @@ const LocMap = () => {
 
   return (
     // Important! Always set the container height explicitly
-    <div style={{ height: '90vh', width: '100%' }}>
-      <input ref={searchInput} type="text" placeholder="Search Box"  />
+    <div style={{ height: '80vh', width: '100%' }}>
+      <Search ref={searchInput} type="text" placeholder="Search Box"  />
       {console.log('InputLoaded')}
       <GoogleMapReact 
         onClick={(map, ev) => {handleClick(map,ev)}}
@@ -129,9 +130,19 @@ const LocMap = () => {
         />
 
       </GoogleMapReact>
-      <Link to="/weather">Weather</Link>
     </div>
   );
 }
 
+const Search = styled.input`
+  width: 250px;
+  margin: 20px;
+  height: 40px;
+  box-shadow: 3px 2px 3px #999;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 0 5px;
+`
 export default LocMap

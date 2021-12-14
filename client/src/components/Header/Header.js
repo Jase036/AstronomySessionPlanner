@@ -11,7 +11,7 @@ const Header = () => {
     return(
         <Wrapper>
             <div>Nav Menu</div>
-            <div>Logo Title</div>
+            <Logo alt='astro planner logo' src='../assets/Astro-Logo.png' />
             {isAuthenticated? <SignOutButton /> : <SignInButton />}
         </Wrapper>
 
@@ -22,6 +22,14 @@ const Header = () => {
 const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
+    padding: 10px 30px;
+    box-shadow: 3px 0 10px #000;
+    z-index: 100;
+`
+
+const Logo = styled.img`
+    height: 80px;
+    width: auto;
 `
 
 export default Header;

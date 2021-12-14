@@ -111,9 +111,20 @@ const AstroPlan = () => {
 
 const ScheduleWrapper = styled.div`
     width: 100vw;
-    height: 100vh;
+    height: 87vh;
     background-color: #555;
     overflow:hidden;
+
+& div.dhx_cal_date, 
+.dhx_cal_tab_first,
+.dhx_cal_today_button,
+.dhx_cal_prev_button {
+    color: #fff
+}
+
+& div.dhx_cal_event {
+    opacity: 0.9;
+}
 `
 
 export default AstroPlan;

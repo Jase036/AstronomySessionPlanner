@@ -57,7 +57,6 @@ const RenderDay = ({day, sg}) => {
                 <Date>
                     <Day>{dateArr[2]}</Day>
                     <Month>{months[dateArr[1] - 1]}</Month>
-                    <Year>{dateArr[0]}</Year>
                 </Date>
                 <MoonData>
                     <p>Moon Phase img here</p>
@@ -70,7 +69,7 @@ const RenderDay = ({day, sg}) => {
                 <HourData>
                     {formattedTimeArray.map((timeSlot,i)=>{
                             return (
-                            <p key={i*Math.floor((Math.random()*10000)+1)}>{timeSlot}</p>
+                            <p key={Math.floor((Math.random()*10000)+1)}>{timeSlot}</p>
                             )
                         })
                     }
@@ -80,9 +79,9 @@ const RenderDay = ({day, sg}) => {
                 <CloudsData>
                     { fillArray.map((timeSlotDetails, i)=>{
                             if (timeSlotDetails !== '') {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.cloudtotal_pct}</p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.cloudtotal_pct}</p>
                             } else {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
                             }
                         })
                     }
@@ -92,9 +91,9 @@ const RenderDay = ({day, sg}) => {
                 <PrecpData>
                     {fillArray.map((timeSlotDetails, i)=>{
                             if (timeSlotDetails !== '') {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.prob_precip_pct}</p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.prob_precip_pct}</p>
                             } else {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
                             }
                         })
                     }
@@ -104,9 +103,9 @@ const RenderDay = ({day, sg}) => {
                 <TempData>
                     {fillArray.map((timeSlotDetails, i)=>{
                             if (timeSlotDetails !== '') {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.temp_c}</p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.temp_c}</p>
                             } else {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
                             }
                         })
                     }
@@ -116,9 +115,9 @@ const RenderDay = ({day, sg}) => {
                 <VisibData>
                     {fillArray.map((timeSlotDetails, i)=>{
                             if (timeSlotDetails !== '') {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.vis_km}</p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.vis_km}</p>
                             } else {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
                             }
                         })
                     }
@@ -128,9 +127,9 @@ const RenderDay = ({day, sg}) => {
                 <DewData>
                     {fillArray.map((timeSlotDetails, i)=>{
                             if (timeSlotDetails !== '') {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.dewpoint_c}</p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.dewpoint_c}</p>
                             } else {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
                             }
                         })
                     }
@@ -144,7 +143,7 @@ const RenderDay = ({day, sg}) => {
                             if (timeSlotDetails !== '') {
                                 return <p key={timeSlotDetails.time}>{timeSlotDetails.windspd_kmh} <br /> {timeSlotDetails.winddir_compass}</p>
                             } else {
-                                return <p key={i*Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
                             }
                         })
                     }
@@ -163,7 +162,9 @@ const RenderDay = ({day, sg}) => {
 const Wrapper = styled.div`
     display:flex;
     flex-direction: column;
-    padding: 30px;
+    margin: 30px;
+    padding: 2px;
+    background-color: #ccc;
 `
 const MoonData = styled.div`
     display:flex;
@@ -174,8 +175,7 @@ const DetailsContainer = styled.div`
     display: grid;
     grid-template-columns: 2fr 2.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr;
-    gap: 5px 5px;
-    grid-auto-flow: row;
+    gap: 2px 2px;
     grid-template-areas:
         "Date Moon-Sun-Info HourData HourData HourData HourData HourData HourData HourData HourData"
         "Clouds Clouds CloudsData CloudsData CloudsData CloudsData CloudsData CloudsData CloudsData CloudsData"
@@ -184,6 +184,13 @@ const DetailsContainer = styled.div`
         "Visib Visib VisibData VisibData VisibData VisibData VisibData VisibData VisibData VisibData"
         "Dew Dew DewData DewData DewData DewData DewData DewData DewData DewData"
         "Wind-Spd-Dir Wind-Spd-Dir WindData WindData WindData WindData WindData WindData WindData WindData";
+
+& div {
+    background-color: #555;
+    display:flex;
+    align-items: center;
+    padding: 0 10px;
+}
 `
 
 const HourData = styled.div `
@@ -195,18 +202,14 @@ const HourData = styled.div `
     width: 60px;
     margin: 5px;
     text-align: center;
-
 }
 `
 
-const Year = styled.p`
-    font-size: 25px;
-`
 const Month = styled.p`
     font-size: 20px;
 `
 const Day = styled.p`
-    font-size: 40px;
+    font-size: 50px;
 `
 
 const Prec = styled.div `
@@ -276,8 +279,7 @@ const DewData = styled.div `
 const Date = styled.div `
     display:flex;
     flex-direction: column;
-    margin-right: 10px
-    justify-content:center;
+    justify-content:space-evenly;
     align-items: center;
     grid-area: Date;
 `

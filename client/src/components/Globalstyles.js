@@ -58,4 +58,23 @@ export default createGlobalStyle`
     h1, h2, h3 {
         font-size: 28px;
     }
+    .dhx_cal_light div {
+        background-color: #555;
+    }
+    .dhx_cal_light select {
+        color: #fff;
+    }
+    .dhx_cal_light_wide {
+        background-color: #555;
+    }
+    .dhx_cal_light textarea {
+        background-color: #ccc;
+    }
+    .dhx_cal_larea .dhx_wrap_section  {
+        background-color: #555;
+    }
+    .dhx_text_disabled  {
+        color: #fff;
+    }
+
 `;
