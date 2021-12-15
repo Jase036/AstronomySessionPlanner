@@ -77,4 +77,7 @@ export default createGlobalStyle`
         color: #fff;
     }
 
+    li.MuiMenuItem-root {
+        color: #555
+    }
 `;

@@ -8,7 +8,7 @@ const { getWeather } = require("./getWeather")
 const { getAstro } = require("./getAstro")
 const { getSchedule } = require("./getSchedule");
 const { addPlan } = require("./addPlan");
-
+const { handleUser } = require("./handleUser");
 
 const PORT = 8000;
 const app = express();
@@ -45,5 +45,9 @@ app.get('/plan/', getSchedule)
 
 // post to create selected astro plan
 app.post('/add-plan/', addPlan)
+
+// checks to see if user is in database, if not creates an entry
+app.post('/user/', handleUser)
+
 
 app.listen(PORT, () => console.info(`Listening on port ${PORT}`));

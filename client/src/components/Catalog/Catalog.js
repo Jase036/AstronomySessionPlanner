@@ -7,6 +7,7 @@ import { DataGrid } from '@mui/x-data-grid'
 import { AstroContext } from '../context/AstroContext'; 
 import { UserContext } from '../context/UserContext';
 import { useAuth0 } from '@auth0/auth0-react';
+import styled from 'styled-components';
 
 const columns = [
     { 
@@ -129,23 +130,26 @@ const Catalog = () => {
     }, [state.location]); // eslint-disable-line
 
     const createPlan = () => {
-        console.log(selectedObjects)
-        fetch("/add-plan/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            body: JSON.stringify(selectedObjects),
-          })
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.status !== 200) {
-            console.log(data);
-            } else {
-                navigate('/schedule/')
-            }
-        })
+        if (selectedObjects.length === 0) {
+            window.alert("You must select at least one object to create a plan!")
+        } else {
+            fetch("/add-plan/", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                },
+                body: JSON.stringify(selectedObjects),
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.status !== 200) {
+                console.log(data);
+                } else {
+                    navigate('/schedule/')
+                }
+            })
+        }
     }
 
     if (!state.hasLoaded){
@@ -154,7 +158,8 @@ const Catalog = () => {
         )
     } else { 
         return (
-            <div style={{ height: 800, width: '100%' }}>
+            <Wrapper >
+                <PlanButton onClick={createPlan}>Create Plan!</PlanButton>
                 <DataGrid
                 rows={astroCatalog}
                 getRowId={(astroCatalog) => astroCatalog._id}
@@ -165,14 +170,40 @@ const Catalog = () => {
                 }}
                 
                 />
-                <button onClick={createPlan}>Create Plan!</button>
-            </div>
+            </Wrapper>
             );
         }
         
 
 }
 
+const Wrapper = styled.div`
+    height: 780px; 
+    width: '100%';
+    position: relative;
 
+& .MuiDataGrid-root.css-1nytev6-MuiDataGrid-root {
+    border:none; !important  
+    }
 
+`
+
+const PlanButton = styled.button`
+    background-color: #eee;
+    color: #555;
+    border: none;
+    font-size: 20px;
+    position: absolute;
+    right: 15px;
+    margin-top: 15px;
+    cursor: pointer;
+    box-shadow: 2px 2px 3px #333;
+    transition: all 0.2s ease-in-out;
+    z-index: 90;
+
+&:hover {
+    transform: scale(1.1);
+    
+}
+`
 export default Catalog;

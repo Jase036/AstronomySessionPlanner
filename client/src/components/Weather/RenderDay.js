@@ -1,11 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import moonIcon from './moonIcon';
 
 
 const RenderDay = ({day, sg}) => {
     
+
     const  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+
 
     const dateArr = day.date.split('/').reverse();
     const dateString = dateArr.join('-')
@@ -59,12 +63,10 @@ const RenderDay = ({day, sg}) => {
                     <Month>{months[dateArr[1] - 1]}</Month>
                 </Date>
                 <MoonData>
-                    <p>Moon Phase img here</p>
+                    <MoonImg alt='moon phase' src={moonIcon(Math.floor(astroForecast[0]?.moonFraction*100), astroForecast[0]?.moonPhase.current.value)}/>
                     <p>{Math.floor(astroForecast[0]?.moonFraction*100)}% </p>
-                    <p>moonrise_time{day.moonrise_time}</p>
-                    <p>moonset_time{day.moonset_time}</p>
-                    <p>sunrise_time{day.sunrise_time}</p>
-                    <p>sunset_time{day.sunset_time}</p>
+                    <p>🌙🡱 {day.moonrise_time} - 🌙🡳 {day.moonset_time}</p>
+                    <p>🌞🡱 {day.sunrise_time} - 🌞🡳 {day.sunset_time}</p>
                 </MoonData>
                 <HourData>
                     {formattedTimeArray.map((timeSlot,i)=>{
@@ -170,6 +172,10 @@ const MoonData = styled.div`
     display:flex;
     flex-direction: column;
     grid-area: Moon-Sun-Info;
+
+& p {
+    padding-bottom: 5px;
+}
 `
 const DetailsContainer = styled.div`
     display: grid;
@@ -313,6 +319,10 @@ const WindData = styled.div `
     margin: 5px;
     text-align: center;
 }
+`
+const MoonImg = styled.img `
+    width: 90px;
+    height: auto;
 `
 
 export default RenderDay;
