@@ -41,7 +41,7 @@ app.get('/forecast/', getWeather)
 app.get('/astro/', getAstro)
 
 // gets our astro plan data
-app.get('/plan/', getSchedule)
+app.get('/plan/:email', getSchedule)
 
 // post to create selected astro plan
 app.post('/add-plan/', addPlan)

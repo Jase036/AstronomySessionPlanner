@@ -10,7 +10,7 @@ const options = {
 };
 
 const getSchedule = async (req, res) => {
-
+    const {email} = req.params
     const client = new MongoClient(MONGO_URI, options);
     const db = client.db("AstroPlanner");
 
@@ -19,11 +19,13 @@ const getSchedule = async (req, res) => {
     
         const weatherSchedule = await db.collection("w_schedule").find().toArray();
 
-        const astroPlan = await db.collection("plan").find().toArray();
-    
+        const userPlan = await db.collection("user").findOne({email})
+        
+        const astroPlan = userPlan.plans
+
         await client.close();
     
-        const sessionPlan = weatherSchedule.concat(astroPlan)
+        const sessionPlan = astroPlan ? weatherSchedule.concat(astroPlan) : weatherSchedule;
         
         if (weatherSchedule.length !== 0) {
         

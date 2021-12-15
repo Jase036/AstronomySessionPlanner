@@ -2,6 +2,10 @@ const { MongoClient } = require("mongodb");
 require("dotenv").config();
 const { MONGO_URI } = process.env;
 
+const Moment = require('moment');  
+const MomentRange = require('moment-range');
+
+const moment = MomentRange.extendMoment(Moment);
 
 const options = {
   useNewUrlParser: true,
@@ -9,8 +13,8 @@ const options = {
 };
 
 const addPlan = async (req, res) => {
-    const selectedObjects = req.body
-
+    const {selectedObjects, email, date} = req.body
+    console.log(date)
     const client = new MongoClient(MONGO_URI, options);
         const db = client.db("AstroPlanner");
 
@@ -20,20 +24,21 @@ const addPlan = async (req, res) => {
         const astroPlanObjects = await db.collection("catalog").find( { _id : { $in : selectedObjects } } ).toArray();
         const sessionTime = 15*60;
         const objectTime = Math.floor(sessionTime / selectedObjects.length);
-        console.log(objectTime, 'oTime')
         
         
         let astroPlanEvents= astroPlanObjects.map((object,i) => {
             const startTime = 18*60;
             const objectStart = new Date();
+            objectStart.setDate(date)
             objectStart.setHours(18)
             objectStart.setMinutes(0)
             objectStart.setMinutes(objectTime * i)
-            console.log(objectStart, 'oStart')
+            
             const objectEnd = new Date();
+            objectEnd.setDate(date)
             objectEnd.setHours(18,0,0,0)
             objectEnd.setMinutes(objectTime*(i+1))
-            console.log(objectEnd, 'oEnd')
+            
             return ({
                     start_date: objectStart, 
                     end_date: objectEnd, 
@@ -42,17 +47,40 @@ const addPlan = async (req, res) => {
                     notes: "", 
                 })
             })
+            console.log(astroPlanEvents, 'astroplan')
+            const userData = await db.collection("user").findOne({email});
             
-            await db.collection("plan").drop(((err, delOK)=> console.log("Dropped!")))
-            await db.collection("plan").insertMany(astroPlanEvents);
+            let uniquePlans = []
+            if (userData.plans.length !== 0) {
+                uniquePlans = astroPlanEvents.filter((obj) => {
+                    const startPlan = moment(obj.start_date);
+                    const endPlan = moment(obj.end_date);
+                    const rangePlan = moment.range(startPlan,endPlan);
+                    const overlap = userData.plans.filter((object) => {
+                        const startUser = moment(object.start_date);
+                        const endUser = moment(object.end_date);
+                        const rangeUser = moment.range(startUser,endUser);
+                        return rangeUser.overlaps(rangePlan)
+                    })
+                    return overlap.length === 0
+            }) 
+            } else {
+                uniquePlans = astroPlanEvents
+            }
             
+            const update = await db.collection("user").updateOne(
+                { email: email },
+                { $push: { plans: {$each: uniquePlans} } }
+              );
+            // await db.collection("plans").insertMany(uniquePlans);
+            console.log(update)
         await client.close();
     
-        if (astroPlanEvents.length !== 0) {
+        if (uniquePlans.length !== 0) {
         
             res.status(200).json({ status: 200, message: "Succesfully added objects to session plan" })                    
         } else { 
-            return res.status(404).json({ status: 404, message: "Not Found", error: err.stack });
+            return res.status(400).json({ status: 400, message: "Plans conflict with existing ones" });
         }
 
     } catch (err) {

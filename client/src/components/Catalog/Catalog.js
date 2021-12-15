@@ -66,11 +66,13 @@ const columns = [
     },
   ];
   
-  
+  let today = new Date();
+  today = Number(today.getDate())
 const Catalog = () => {
-    const { user, isAuthenticated, isLoading } = useAuth0
+    const { user, isAuthenticated } = useAuth0();
     const {astroCatalog, setAstroCatalog, selectedObjects, setSelectedObjects, plan, setPlan} = useContext(AstroContext);
     const { state, setLoadingState, unsetLoadingState, setLocation } = useContext(UserContext);
+    const [sessionDate,setSessionDate] = useState(today)
     
 
     let {lat, lon} = state.location;
@@ -86,7 +88,8 @@ const Catalog = () => {
     }
 
     setLoadingState()
-        fetch('/plan/')
+        if (isAuthenticated){
+        fetch(`/plan/${user.email}`)
         .then((res) => res.json())
         .then((data) => {
             if (data.status !== 200) {
@@ -95,7 +98,7 @@ const Catalog = () => {
                 setPlan(data.data);
                 unsetLoadingState();
             }
-        })
+        })}
     }, []); // eslint-disable-line
 
     
@@ -133,23 +136,29 @@ const Catalog = () => {
         if (selectedObjects.length === 0) {
             window.alert("You must select at least one object to create a plan!")
         } else {
+            const planData = { selectedObjects, email: user.email, date: sessionDate }
             fetch("/add-plan/", {
                 method: "POST",
                 headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
                 },
-                body: JSON.stringify(selectedObjects),
+                body: JSON.stringify(planData),
             })
             .then((res) => res.json())
             .then((data) => {
                 if (data.status !== 200) {
                 console.log(data);
+                window.alert(`${data.message}. Please select a different day or modify your existing plan through the schedule`)
                 } else {
                     navigate('/schedule/')
                 }
             })
         }
+    }
+
+    const handleChange = (ev) => {
+        setSessionDate(ev.target.value)
     }
 
     if (!state.hasLoaded){
@@ -159,7 +168,18 @@ const Catalog = () => {
     } else { 
         return (
             <Wrapper >
-                <PlanButton onClick={createPlan}>Create Plan!</PlanButton>
+                {isAuthenticated && <PlanButton onClick={createPlan}>Create Plan!</PlanButton>}
+                {isAuthenticated && 
+                    <DateSelect>
+                        <label for='date'>Choose a date</label>
+                        <select name='date' onChange={handleChange}>
+                            <option value={today}>{today}</option>
+                            <option value={today +1}>{today + 1}</option>
+                            <option value={today +2}>{today + 2}</option>
+                            <option value={today +3}>{today + 3}</option>
+                        </select>
+                    </DateSelect>
+                }
                 <DataGrid
                 rows={astroCatalog}
                 getRowId={(astroCatalog) => astroCatalog._id}
@@ -205,5 +225,14 @@ const PlanButton = styled.button`
     transform: scale(1.1);
     
 }
+`
+
+const DateSelect = styled.div`
+    z-index: 95;
+    position: absolute;
+    right: 150px;
+    margin-top: 9px;
+    display:flex;
+    flex-direction:column;
 `
 export default Catalog;

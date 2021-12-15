@@ -6,6 +6,8 @@ import 'dhtmlx-scheduler/codebase/dhtmlxscheduler_material.css';
 import styled from 'styled-components';
 import { UserContext } from '../context/UserContext';
 import { AstroContext } from '../context/AstroContext';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
 
 
 //Create a window object - required by the DHTMLX library.
@@ -15,15 +17,17 @@ let schedulerContainer=''
 
 //This component initializes the week scheduler
 const AstroPlan = () => {
-    const {state, setLoadingState, unsetLoadingState } = useContext(UserContext)
-    const {plan, setPlan} = useContext(AstroContext)
-    
+    const{ user, isAuthenticated } = useAuth0();
+    const {state, setLoadingState, unsetLoadingState } = useContext(UserContext);
+    const {plan, setPlan} = useContext(AstroContext);
+    let navigate = useNavigate();
     
     
     
     useEffect(() => {
         setLoadingState()
-        fetch('/plan/')
+        if (isAuthenticated) {
+        fetch(`/plan/${user.email}`)
         .then((res) => res.json())
         .then((data) => {
             if (data.status !== 200) {
@@ -33,6 +37,9 @@ const AstroPlan = () => {
                 unsetLoadingState();
             }
         })
+        } else {
+            navigate('/')
+        }
     }, []); // eslint-disable-line
     
     //  Things to happen on mount 
@@ -77,7 +84,7 @@ const AstroPlan = () => {
         
     }, [plan])
 
-
+console.log(plan)
     const block_readonly = (id) => {
             
         if (!id) return false
