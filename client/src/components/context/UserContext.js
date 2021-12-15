@@ -1,5 +1,5 @@
 import React, {createContext, useReducer, useEffect} from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+
 
 
 export const UserContext = createContext(null);
@@ -58,7 +58,6 @@ const reducer = (state, action) => {
 export const UserProvider = ({ children }) => {
 
     const [state, dispatch] = useReducer(reducer, initialState);
-    const session = JSON.parse(localStorage.getItem('session'))
 
     useEffect (()=>{
         
@@ -82,7 +81,6 @@ export const UserProvider = ({ children }) => {
 
     //add location data to state
     const setLocation = (data) => {
-        console.log(data)
         dispatch({
         type: "set-location",
         location: data

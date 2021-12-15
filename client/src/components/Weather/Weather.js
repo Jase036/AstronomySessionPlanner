@@ -1,36 +1,31 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../context/UserContext';
-import {Link, useNavigate} from 'react-router-dom'
-import Spinner from '../Loading/Spinner';
-import RenderDay from './RenderDay';
-import { useAuth0 } from '@auth0/auth0-react';
-import Catalog from '../Catalog/Catalog';
+//import dependencies
+import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 
+//import states & context
+import { UserContext } from '../context/UserContext';
 
+//import components
+import Spinner from '../Loading/Spinner';
+import RenderDay from './RenderDay';
+
+
+//main weather component function
 const Weather = () => {
-    let navigate = useNavigate();
-    const { user, isAuthenticated } = useAuth0;
+
     const {state, setLoadingState, unsetLoadingState, setForecast, setLocation, setSGForecast} = useContext(UserContext);
 
-    let {lat, lon} = state.location
     const session = JSON.parse(localStorage.getItem('session'))
     
     useEffect( () => {
-    if (!state.location && session) {    
-        setLocation(session.location);
-    } 
+        if (!state.location && session) {    
+            setLocation(session.location);
+        } 
     }, []); // eslint-disable-line
-
+    
+    //if location changes we change our forecast
     useEffect( () => {
         
-        // if (!state.hasLoaded && !lat ) {
-            
-        //     window.alert("Please select a location first");
-        //     navigate('/location')
-            
-        // } 
-        // else { 
             setLoadingState()
             fetch(`/forecast/?lat=${session.location.lat.toFixed(3)}&lon=${session.location.lon.toFixed(3)}`, {
             headers : { 

@@ -1,25 +1,28 @@
+//import dependencies
 import React from 'react';
 import styled from 'styled-components';
 
+//import components
 import moonIcon from './moonIcon';
 
-
+// creates each day's forecast grid
 const RenderDay = ({day, sg}) => {
     
 
     const  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
 
-
+    //reformat date from object
     const dateArr = day.date.split('/').reverse();
     const dateString = dateArr.join('-')
 
-    
+    //we find the sgforecast object for the same day
     const astroForecast = sg.filter((dayObject) => {
         return dayObject.time.includes(dateString)
     })
     
-
+    //we have to reformat the time since it comes in military time without the colon
+    //we also fill the array if we have partial day forecasts
     let fTime=[]
     let formattedTimeArray = []
     let fillArray = []
@@ -46,6 +49,8 @@ const RenderDay = ({day, sg}) => {
                 fTime = timeSlotDetails.time.toString().split("");
                 fTime.splice(2, 0, ':');
                 formattedTimeArray.push(fTime.join(''));
+                break;
+            default :
                 break;
         }
         } else {
@@ -177,6 +182,8 @@ const MoonData = styled.div`
     padding-bottom: 5px;
 }
 `
+
+//there is likely a better way to establish the grid template areas, but I don't know it. Add it to the to-do.
 const DetailsContainer = styled.div`
     display: grid;
     grid-template-columns: 2fr 2.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;

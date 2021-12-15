@@ -1,12 +1,15 @@
+//import dependencies
 import styled from 'styled-components';
-import Spinner from './Loading/Spinner';
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+//import components
 import LocMap from './Maps/LocMap';
 import Weather from './Weather/Weather';
 import AstroPlan from './Scheduler/AstroPlan';
 import Globalstyles from "./Globalstyles";
 import Catalog from './Catalog/Catalog';
 import Header from './Header/Header';
+import Home from './HomePage/Home';
 
 
 const App = () => {
@@ -16,6 +19,7 @@ const App = () => {
       <Wrapper>
         <Header />
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/location" element={<LocMap />} />
           <Route path="/weather" element={<Weather />} />
           <Route path="/catalog" element={<Catalog/>} />
@@ -30,6 +34,5 @@ const Wrapper = styled.div`
   display:flex;
   flex-direction: column;
 `
-
 
 export default App;

@@ -1,36 +1,42 @@
-import { useAuth0 } from '@auth0/auth0-react';
+//import dependencies
 import React, { useContext, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 
+//import states & context
+import { AstroContext } from '../context/AstroContext';
+
+//import components
 import SignInButton from '../Auth0/SignInButton'
 import SignOutButton from '../Auth0/SignOutButton'
-import { AstroContext } from '../context/AstroContext';
 import NavMenu from './NavMenu';
+
 
 const Header = () => {
     const { user, isAuthenticated } = useAuth0();
     const { setPlan } = useContext(AstroContext)
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            fetch("/user/", {
-                method: "POST",
-                headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                },
-                body: JSON.stringify(user),
-            })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.status !== 200) {
-                console.log(data);
-                } else {
-                    setPlan(data.data)
-                }
-            })
-        }
-    }, [isAuthenticated]);
+    // // check to see if user is signed in and if so, we grab their existing plan data
+    // useEffect(() => {
+    //     if (isAuthenticated) {
+    //         fetch("/user/", {
+    //             method: "POST",
+    //             headers: {
+    //             "Content-Type": "application/json",
+    //             Accept: "application/json",
+    //             },
+    //             body: JSON.stringify(user),
+    //         })
+    //         .then((res) => res.json())
+    //         .then((data) => {
+    //             if (data.status !== 200) {
+    //             console.log(data);
+    //             } else {
+    //                 setPlan(data.data.plans)
+    //             }
+    //         })
+    //     }
+    // }, [isAuthenticated]); // eslint-disable-line
 
 
     return(
@@ -39,7 +45,7 @@ const Header = () => {
             <Logo alt='astro planner logo' src='../assets/Astro-Logo.png' />
             <User>
                 {isAuthenticated? <SignOutButton /> : <SignInButton />}
-                {isAuthenticated? <p> Hi, {user.given_name}</p> : null}
+                {isAuthenticated? <p> Hi, {user.given_name}</p> : <p>Sign In</p>}
             </User>
         </Wrapper>
 

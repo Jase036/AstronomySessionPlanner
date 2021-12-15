@@ -1,14 +1,18 @@
+//import dependencies
 import React, { useContext, useState, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
-import Spinner from '../Loading/Spinner';
+import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid'
+import styled from 'styled-components';
 
-
+//import state & context
 import { AstroContext } from '../context/AstroContext'; 
 import { UserContext } from '../context/UserContext';
 import { useAuth0 } from '@auth0/auth0-react';
-import styled from 'styled-components';
 
+//import modules
+import Spinner from '../Loading/Spinner';
+
+//declare the column info for the data grid
 const columns = [
     { 
         field: 'name',
@@ -16,7 +20,7 @@ const columns = [
         numeric: false,
         disablePadding: true,
         editable: false,
-        width: 150,
+        width: 130,
         valueGetter: (params) => params.row.fields.name
     },
     { 
@@ -25,7 +29,7 @@ const columns = [
         numeric: false, 
         disablePadding: true,
         editable: false,
-        width: 200, 
+        width: 180, 
         valueGetter: (params) => params.row.fields.common_names,
     },
     {
@@ -43,76 +47,60 @@ const columns = [
         numeric: false,
         disablePadding: true,
         editable: false,
-        width: 100, 
+        width: 140, 
         valueGetter: (params) => params.row.fields.object_definition,
     },
     {
         field: 'ra',
-        headerName: 'Right Ascension',
+        headerName: 'RA',
         numeric: false,
         disablePadding: true,
         editable: false,
-        width: 170, 
+        width: 140, 
         valueGetter: (params) => params.row.fields.ra,
     },
     {
         field: 'dec',
-        headerName: 'Declination',
+        headerName: 'DEC',
         numeric: false,
         disablePadding: true,
         editable: false,
-        width: 170, 
+        width: 140, 
         valueGetter: (params) => params.row.fields.dec,
     },
-  ];
-  
-  let today = new Date();
-  today = Number(today.getDate())
+];
+
+//get today's date for the date picker
+let today = new Date();
+today = Number(today.getDate())
+
 const Catalog = () => {
+    
+    //initialize state and context
     const { user, isAuthenticated } = useAuth0();
-    const {astroCatalog, setAstroCatalog, selectedObjects, setSelectedObjects, plan, setPlan} = useContext(AstroContext);
+    const {astroCatalog, setAstroCatalog, selectedObjects, setSelectedObjects } = useContext(AstroContext);
     const { state, setLoadingState, unsetLoadingState, setLocation } = useContext(UserContext);
     const [sessionDate,setSessionDate] = useState(today)
     
-
-    let {lat, lon} = state.location;
+    //declare variables that require hoisting
     let navigate = useNavigate();
+    let {lat, lon} = state.location;
+    
 
+    //get session info from localStorage
     const session = JSON.parse(localStorage.getItem('session'))
 
-    useEffect( () => {
-    if (!state.location.lat && session) {    
-        setLocation(session.location);
-        lat = session.location.lat;
-        lon = session.location.lon;
-    }
-
-    setLoadingState()
-        if (isAuthenticated){
-        fetch(`/plan/${user.email}`)
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.status !== 200) {
-                console.log(data)
-            } else {
-                setPlan(data.data);
-                unsetLoadingState();
-            }
-        })}
+    useEffect(() => {
+        if (!state.location.lat && session) {    
+            setLocation(session.location);
+        }
     }, []); // eslint-disable-line
-
     
+    // If the location changes, fetch the catalog data again
     useEffect( () => {
-        
-        
-        if (!state.hasLoaded && !lat ) {
-            
-            window.alert("Please select a location first");
-            navigate('/location')
-            
-        } else {
-            setLoadingState()
 
+        setLoadingState()
+        if (lat) {
             fetch(`/astro/?lat=${lat}&lon=${lon}`, {
                 headers : { 
                     'Content-Type': 'application/json',
@@ -132,11 +120,20 @@ const Catalog = () => {
         
     }, [state.location]); // eslint-disable-line
 
+    //sends the selected objects and other info to BE to create the plan for the scheduler.
     const createPlan = () => {
+        
+        //check to see if objects have been selected
         if (selectedObjects.length === 0) {
             window.alert("You must select at least one object to create a plan!")
-        } else {
+        } 
+        
+        else {
+
+            //prep the info to be sent in the body of our post
             const planData = { selectedObjects, email: user.email, date: sessionDate }
+            
+            //send it to the BE and then navigate to the scheduler to view the plan
             fetch("/add-plan/", {
                 method: "POST",
                 headers: {
@@ -157,6 +154,7 @@ const Catalog = () => {
         }
     }
 
+    //handles change on the date selector
     const handleChange = (ev) => {
         setSessionDate(ev.target.value)
     }
@@ -171,7 +169,7 @@ const Catalog = () => {
                 {isAuthenticated && <PlanButton onClick={createPlan}>Create Plan!</PlanButton>}
                 {isAuthenticated && 
                     <DateSelect>
-                        <label for='date'>Choose a date</label>
+                        <label>Choose a date</label>
                         <select name='date' onChange={handleChange}>
                             <option value={today}>{today}</option>
                             <option value={today +1}>{today + 1}</option>

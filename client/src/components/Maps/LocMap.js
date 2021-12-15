@@ -1,15 +1,19 @@
+//import dependencies
 import React, { useRef, useContext, useState } from "react";
 import styled from "styled-components";
 import GoogleMapReact from 'google-map-react';
+import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom";
+
+//import context & URL keys
 import { bootstrapURLKeys } from "./bootstrapURLKeys";
 import { UserContext } from "../context/UserContext"
-import { Link } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 
 
-
+//declare variable that requires hoisting
 let searchBar = {};
 
+//component that renders the marker on the map
 const ClickMarkerComponent = () => {
   return (
     <svg width="50" height="50" viewBox="0 0 50 50">
@@ -20,20 +24,24 @@ const ClickMarkerComponent = () => {
     </svg>)
 };
 
+//Maps api options
 const options = {
   fields: ['place_id', 'name', 'geometry']
 };
 
-
+//main maps location component function
 const LocMap = () => {
   const [apiMaps, setApiMaps] = useState(null)
   
-  const { user, isAuthenticated } = useAuth0;
+  const { user, isAuthenticated } = useAuth0();
   
   const {state, setLocation} = useContext(UserContext)
+  
   const searchInput = useRef();
 
-  let placeId = '';
+  let navigate = useNavigate()
+
+  
 
   const defaultProps = {
     center: {
@@ -43,8 +51,8 @@ const LocMap = () => {
     zoom: 11
   };
 
+  //handles click on the map to set the location state as well as the storage
   const handleClick = ({ map, lat, lng }) => {
-    console.log (typeof lat)
     
     setLocation({lat: lat, lon: lng})
     
@@ -53,26 +61,32 @@ const LocMap = () => {
     window.localStorage.setItem('session', JSON.stringify({user: 'guest', location: {lat: lat, lon: lng}}))
 
     const clickMarker = new apiMaps.Marker({
-      position: {lat: parseFloat(lat), lng: parseFloat(lng)},
+      position: {lat: lat, lng: lng},
       map: map
     })
 
     clickMarker.setVisible(true);
+
+    if (window.confirm(`Location has been set to lat: ${lat}, lon: ${lng}.  Do you wish to continue to the weather forecast?` )){
+      navigate('/weather')
+    }
   }
 
-
+  //thing to happen after Maps API has loaded
   const handleApiLoaded = (map, maps) => {
+    
     setApiMaps(maps)
+    
     searchBar = new maps.places.Autocomplete(searchInput.current, options);
     searchBar.bindTo("bounds", map);
+    
     map.controls[maps.ControlPosition.TOP_LEFT].push(searchInput.current);
     
     searchBar.addListener('place_changed', ()=> {
       let place = searchBar.getPlace();
       if (!place.geometry || !place.geometry.location) { window.alert ('Please select a location from the dropdown or click the map on your desired location') 
-      } else {
-        placeId = place.place_id
-
+      } 
+      else {
         
       const coordString= JSON.stringify(place.geometry.location);
       const coordenates= JSON.parse(coordString)
@@ -87,8 +101,6 @@ const LocMap = () => {
         anchor: new maps.Point(15, 30),
       };
     
-      
-
       const marker = new maps.Marker({ 
         icon: svgMarker,
         map: map });
@@ -111,10 +123,9 @@ const LocMap = () => {
     
 
   return (
-    // Important! Always set the container height explicitly
+    // Important: set the container height explicitly
     <div style={{ height: '80vh', width: '100%' }}>
       <Search ref={searchInput} type="text" placeholder="Search Box"  />
-      {console.log('InputLoaded')}
       <GoogleMapReact 
         onClick={(map, ev) => {handleClick(map,ev)}}
         bootstrapURLKeys={bootstrapURLKeys}

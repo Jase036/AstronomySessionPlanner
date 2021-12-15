@@ -8,9 +8,8 @@ export const AstroProvider = ({ children }) => {
     
     const [astroCatalog, setAstroCatalog] = useState([]);
     const [selectedObjects, setSelectedObjects] = useState([]);
-    const [plan, setPlan] = useState({})
+    const [plan, setPlan] = useState([])
 
-console.log(selectedObjects)
 
     return (
         <AstroContext.Provider

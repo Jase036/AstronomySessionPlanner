@@ -9,6 +9,7 @@ const { getAstro } = require("./getAstro")
 const { getSchedule } = require("./getSchedule");
 const { addPlan } = require("./addPlan");
 const { handleUser } = require("./handleUser");
+const { editPlan } = require("./editPlan");
 
 const PORT = 8000;
 const app = express();
@@ -49,5 +50,7 @@ app.post('/add-plan/', addPlan)
 // checks to see if user is in database, if not creates an entry
 app.post('/user/', handleUser)
 
+// modify or delete plan in user's document
+app.post('/edit-plan/', editPlan)
 
 app.listen(PORT, () => console.info(`Listening on port ${PORT}`));

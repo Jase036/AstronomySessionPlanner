@@ -14,7 +14,7 @@ const options = {
 
 const addPlan = async (req, res) => {
     const {selectedObjects, email, date} = req.body
-    console.log(date)
+    
     const client = new MongoClient(MONGO_URI, options);
         const db = client.db("AstroPlanner");
 
@@ -47,7 +47,7 @@ const addPlan = async (req, res) => {
                     notes: "", 
                 })
             })
-            console.log(astroPlanEvents, 'astroplan')
+            
             const userData = await db.collection("user").findOne({email});
             
             let uniquePlans = []
@@ -71,16 +71,15 @@ const addPlan = async (req, res) => {
             const update = await db.collection("user").updateOne(
                 { email: email },
                 { $push: { plans: {$each: uniquePlans} } }
-              );
-            // await db.collection("plans").insertMany(uniquePlans);
-            console.log(update)
+            );
+
         await client.close();
     
         if (uniquePlans.length !== 0) {
         
             res.status(200).json({ status: 200, message: "Succesfully added objects to session plan" })                    
         } else { 
-            return res.status(400).json({ status: 400, message: "Plans conflict with existing ones" });
+            return res.status(400).json({ status: 400, message: "Plans conflict with existing ones", data:update});
         }
 
     } catch (err) {
