@@ -1,9 +1,9 @@
+//import dependencies
 import React from "react";
-
-
-//styling
 import styled, {keyframes} from "styled-components";
 
+
+//creates the divs that will spin with CSS styles and animation
 
 const Spinner = () => {
     return (

@@ -12,63 +12,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 //import modules
 import Spinner from '../Loading/Spinner';
 
-//declare the column info for the data grid
-const columns = [
-    { 
-        field: 'name',
-        headerName: 'Catalog Name',
-        numeric: false,
-        disablePadding: true,
-        editable: false,
-        width: 130,
-        valueGetter: (params) => params.row.fields.name
-    },
-    { 
-        field: 'common_names', 
-        headerName: 'Common Names',
-        numeric: false, 
-        disablePadding: true,
-        editable: false,
-        width: 180, 
-        valueGetter: (params) => params.row.fields.common_names,
-    },
-    {
-        field: 'v_mag',
-        headerName: 'Apparent Magnitude',
-        numeric: true,
-        disablePadding: false,
-        editable: false,
-        width: 100, 
-        valueGetter: (params) => params.row.fields.v_mag,
-    },
-    {
-        field: 'object_definition',
-        headerName: 'Object Type',
-        numeric: false,
-        disablePadding: true,
-        editable: false,
-        width: 140, 
-        valueGetter: (params) => params.row.fields.object_definition,
-    },
-    {
-        field: 'ra',
-        headerName: 'RA',
-        numeric: false,
-        disablePadding: true,
-        editable: false,
-        width: 140, 
-        valueGetter: (params) => params.row.fields.ra,
-    },
-    {
-        field: 'dec',
-        headerName: 'DEC',
-        numeric: false,
-        disablePadding: true,
-        editable: false,
-        width: 140, 
-        valueGetter: (params) => params.row.fields.dec,
-    },
-];
+//import the column info for the data grid
+import {columns} from './columns'
 
 //get today's date for the date picker
 let today = new Date();
@@ -90,6 +35,8 @@ const Catalog = () => {
     //get session info from localStorage
     const session = JSON.parse(localStorage.getItem('session'))
 
+    //if for some reason we don't have a location (skipped location?) set in state 
+    // but we have it in storage, read that and set the state.
     useEffect(() => {
         if (!state.location.lat && session) {    
             setLocation(session.location);
@@ -123,7 +70,7 @@ const Catalog = () => {
     //sends the selected objects and other info to BE to create the plan for the scheduler.
     const createPlan = () => {
         
-        //check to see if objects have been selected
+        //check to see if objects have been selected otherwise send alert
         if (selectedObjects.length === 0) {
             window.alert("You must select at least one object to create a plan!")
         } 

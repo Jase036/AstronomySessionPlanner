@@ -1,7 +1,10 @@
+//import dependencies
 import React, { createContext, useState } from "react";
+
+//This context holds the catalog data, plans for the scheduler and 
+//the selected objects array.
+
 export const AstroContext = createContext(null);
-
-
 
 
 export const AstroProvider = ({ children }) => {

@@ -1,43 +1,38 @@
+// import Mongo driver, options and dotenv
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 const { MONGO_URI, W_APP_ID, W_APP_KEY } = process.env;
 
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-const RaDecToAltAz = require ("./RaDecToAltAz")
-
 const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 };
 
+
+// import arguably the most complex part of this app
+// this calculates which objects will be visible in the night sky
+// based on location and date.
+const RaDecToAltAz = require ("./RaDecToAltAz")
+
+//gets our catalog data and does some math =)
 const getAstro = async (req, res) => {
 
+    //Instantiate the Mongo client and select the DB
     const client = new MongoClient(MONGO_URI, options);
     const db = client.db("AstroPlanner");
 
+    //destruct our incoming data
     const { lat, lon } = req.query;
-    let { start, limit } = req.query;
 
-    // Start is starting index for the filtered astro catalog requested.
-    // If no limit query is passed we fallback to 25.
-    if (!start) {
-        start = 0
-    } else {
-        start = Number(start);
-    }
-
-    // The limit represents the number of objects from starting position so we add the starting position.
-    // If no limit query is passed we fallback to 25.
-    if (!limit) {
-       limit = start + 25;
-    } else {limit = Number(limit) + start  }
-    
     
     try {
+
+        //connect and retrieve the entire catalog of the 400
+        //brightest objects (excluding planets) in the sky
         await client.connect();
-    
         const astroData = await db.collection("catalog").find().toArray();
     
+        //always close the client!
         await client.close();
     
         if (astroData.length !== 0) {
@@ -49,7 +44,6 @@ const getAstro = async (req, res) => {
         const data = await response.json();
         
         // since we don't really need super specific sunset or rise, we split to get the hour
-        
         const {sunrise_time, sunset_time} = data.Days[0]
         const sunriseH = sunrise_time.split('')[0]
         const sunsetH = sunset_time.split('')[0]
@@ -107,7 +101,7 @@ const getAstro = async (req, res) => {
                 return AltAzConverter.raDecToAltAz().alt > 0
             })
         }
-            //Some conditional logic to return paginated results and to handle if the limit is greater than the number of results
+            //return results or error message
             if (filteredAstro.length !== 0) {
                 res.status(200).json({ status: 200, data: filteredAstro })                    
             } else { 

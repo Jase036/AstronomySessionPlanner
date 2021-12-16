@@ -10,6 +10,7 @@ const { getSchedule } = require("./getSchedule");
 const { addPlan } = require("./addPlan");
 const { handleUser } = require("./handleUser");
 const { editPlan } = require("./editPlan");
+const { getBody } = require("./getSchedule");
 
 const PORT = 8000;
 const app = express();

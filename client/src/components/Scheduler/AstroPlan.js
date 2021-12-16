@@ -1,7 +1,7 @@
 //import dependencies
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+
 
 //import scheduler grid dependencies
 import 'dhtmlx-scheduler';
@@ -26,8 +26,6 @@ const AstroPlan = () => {
     const{ user, isAuthenticated } = useAuth0();
     const { setLoadingState, unsetLoadingState } = useContext(UserContext);
     const { plan, setPlan } = useContext(AstroContext);
-    const [editPlan, setEditPlan] = useState([])
-    
     
 
     //  fetch the weather and astro plans on mount
@@ -42,10 +40,20 @@ const AstroPlan = () => {
             } else {
                 setPlan(data.data);
                 unsetLoadingState();
+                
             }
         })
         } 
 
+
+        //attach all the listeners we need
+        scheduler.attachEvent("onBeforeDrag", block_readonly)
+        scheduler.attachEvent("onClick", block_readonly)
+        scheduler.attachEvent("onEventDrag", block_readonly)
+        scheduler.attachEvent('onEventAdded', (id, ev) => {onDataUpdated('create', ev, id);});
+        scheduler.attachEvent('onEventChanged', (id, ev) => {onDataUpdated('update', ev, id)});
+        scheduler.attachEvent('onEventDeleted', (id, ev) => {onDataUpdated('delete', ev, id)});
+        
         
     }, []); // eslint-disable-line
     
@@ -79,55 +87,30 @@ const AstroPlan = () => {
         scheduler.config.all_timed = 'short'
         scheduler.config.prevent_cache = true;
         scheduler.config.hour_size_px = 30;
+        scheduler.clearAll();
         scheduler.parse(plan);
         
-        //attach all the listeners we need
         
-        scheduler.attachEvent("onBeforeDrag",block_readonly)
-		scheduler.attachEvent("onClick",block_readonly)
-        scheduler.attachEvent("onEventDrag",block_readonly)
-        scheduler.attachEvent('onEventAdded', (id, ev) => {onDataUpdated('create', ev, id);});
-        scheduler.attachEvent('onEventChanged', (id, ev) => {onDataUpdated('update', ev, id)});
-        scheduler.attachEvent('onEventDeleted', (id, ev) => {onDataUpdated('delete', ev, id)});
-        
-        scheduler.init(schedulerContainer, new Date(2021, 11, 13));
+       
+        scheduler.init(schedulerContainer, new Date());
         
     }, [plan]) //eslint-disable-line
 
+    
+    //this blocks editing on those events with the readonly property (weather)
     const block_readonly = (id) => {
             
         if (!id) return false
         return scheduler.getEvent(id).readonly
     }
     
-    const onDataUpdated = (action, ev, id) => {
-        let updatePlan=[]
+    
+    //this sends any change in events (notes, delete or modify time range) to the BE and then reloads
+    const onDataUpdated = async (action, ev, id) => {
+
+        //set the data up to be sent in the post body
+        const planData = { email: user.email, action, ev, id }
         
-        
-        if (plan !== []) {
-            
-            switch (action) {
-                case 'create':
-                    updatePlan = [...plan]
-                    setEditPlan(updatePlan.push(ev));
-                    break;
-                case 'update':
-                    updatePlan = [...plan]
-                    const updateIndex = [...plan].findIndex((ev) => ev.id === id)
-                    updatePlan.splice(updateIndex,1, ev);
-                    setEditPlan(updatePlan);
-                    break;
-                case 'delete':
-                    updatePlan = [...plan]
-                    const deleteIndex = [...plan].findIndex((ev) => ev.id === id)
-                    updatePlan.splice(deleteIndex,1);
-                    setEditPlan(updatePlan);
-                    break;
-                default :
-                    break;
-            }
-            console.log(updatePlan)
-            const planData = { email: user.email, plan: updatePlan }
 
         fetch("/edit-plan/", {
             method: "POST",
@@ -143,19 +126,21 @@ const AstroPlan = () => {
             console.log(data);
             } else {
                 console.log("Successfully edited the plan data")
+
+                //after edit is successful, fetch the updated entries
                 fetch(`/plan/${user.email}`)
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.status !== 200) {
-                console.log(data)
-            } else {
-                setPlan(data.data);
-                unsetLoadingState();
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status !== 200) {
+                        console.log(data)
+                    } else {
+                        setPlan(data.data);
+                    }
+                })
             }
         })
-            }
-        })
-        }
+        
+        
     };
     
     
@@ -181,6 +166,7 @@ const ScheduleWrapper = styled.div`
 & div.dhx_cal_event {
     opacity: 0.9;
 }
+
 `
 
 export default AstroPlan;

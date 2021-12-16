@@ -8,7 +8,7 @@ import moonIcon from './moonIcon';
 // creates each day's forecast grid
 const RenderDay = ({day, sg}) => {
     
-
+    //Month names
     const  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
 

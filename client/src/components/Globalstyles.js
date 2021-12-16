@@ -5,11 +5,6 @@ export const breakpoints = { tablet: "600px" };
 export default createGlobalStyle`
 
     :root {
-      --cool-gray: #79808A;
-      --champagne: #F1E6C8;
-      --sage: #DCDCD0;
-      --dusty-rose: #D3BAB1;
-      --max-content-width: 1200px;
       --font-family: 'Raleway', sans-serif;
     }
 
@@ -58,11 +53,14 @@ export default createGlobalStyle`
     h1, h2, h3 {
         font-size: 28px;
     }
+
+    //Global styles for the dhtmlx library
     .dhx_cal_light div {
         background-color: #555;
     }
     .dhx_cal_light select {
-        color: #fff;
+        color: #aaa;
+        background-color: #555
     }
     .dhx_cal_light_wide {
         background-color: #555;
@@ -76,7 +74,9 @@ export default createGlobalStyle`
     .dhx_text_disabled  {
         color: #fff;
     }
-
+    div.dhtmlx_modal_box.dhtmlx-alert span {
+        color:#555 !important
+    }
     li.MuiMenuItem-root {
         color: #555
     }

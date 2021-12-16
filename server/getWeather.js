@@ -1,13 +1,19 @@
+// import Mongo driver, options and dotenv
+const {MongoClient} = require('mongodb');
 require("dotenv").config();
 const { W_APP_ID, W_APP_KEY, SG_API_KEY, MONGO_URI } = process.env;
-const {MongoClient} = require('mongodb');
 
 const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 };
 
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+//import moment
+const Moment = require('moment');  
+
+//import node fetch
+const fetch = (...args) => import('node-fetch')
+.then(({default: fetch}) => fetch(...args));
 
 //grab the weather data for the next 7 days
 const getWeather = async (req, res) => {
@@ -22,17 +28,21 @@ const getWeather = async (req, res) => {
         const db = client.db('AstroPlanner');
         await client.connect();
         
+        //we get the StormGlass astro forecast data
         let dataAstro = await db.collection("sg-weather").find().toArray();
         
-        
-        if (dataAstro.length === 0){
+        // if StormGlass is older than 3 days we get a new one
+        let retrieveDate = Moment(dataAstro[0].time)
+        let currentDate = Moment ()
+        let difference = currentDate.diff(retrieveDate, 'days')
+        if (difference > 3){
             
             const astronomyForecastRequest = `https://api.stormglass.io/v2/astronomy/point?lat=${lat}&lng=${lon}`
             const responseAstro = await fetch(astronomyForecastRequest, {headers: {
                 'Authorization': SG_API_KEY
             }});
             dataAstro = await responseAstro.json();
-
+            await db.collection("sg-weather").createIndex({ time: 1 }, { unique: true });
             await db.collection("sg-weather").insertMany(dataAstro.data)
         }
 

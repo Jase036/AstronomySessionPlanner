@@ -1,6 +1,8 @@
+//import dependencies
 import React, {createContext, useReducer, useEffect} from "react";
 
-
+//This context holds the loading state, location and forecast 
+// states with a reducer to manage it.
 
 export const UserContext = createContext(null);
 
@@ -87,7 +89,7 @@ export const UserProvider = ({ children }) => {
         });
     };
 
-    //Store weather forecast in state to avoid unneeded fetches to weather API
+    //Store weather forecast in state
     const setForecast = (data) => {
         
         dispatch({
@@ -96,7 +98,7 @@ export const UserProvider = ({ children }) => {
         });
     };
 
-    //Store Strom Glass weather forecast in state to avoid unneeded fetches to weather API
+    //Store Storm Glass weather forecast (mainly for moon data)
     const setSGForecast = (data) => {
         
         dispatch({

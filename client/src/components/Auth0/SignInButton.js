@@ -1,9 +1,12 @@
+//import dependencies
 import React from "react";
 import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
+
+//import icon
 import { FiUserCheck } from "react-icons/fi";
 
-
+//Login button for Auth0 sign in
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 

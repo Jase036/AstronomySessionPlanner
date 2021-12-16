@@ -1,5 +1,6 @@
 //import dependencies
 import React, { useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 //import states & context
@@ -14,18 +15,17 @@ import RenderDay from './RenderDay';
 const Weather = () => {
 
     const {state, setLoadingState, unsetLoadingState, setForecast, setLocation, setSGForecast} = useContext(UserContext);
+    const {forecast} = state
 
     const session = JSON.parse(localStorage.getItem('session'))
     
-    useEffect( () => {
-        if (!state.location && session) {    
-            setLocation(session.location);
-        } 
-    }, []); // eslint-disable-line
-    
+    let navigate = useNavigate()
+
     //if location changes we change our forecast
     useEffect( () => {
-        
+        if (session) {    
+            setLocation(session.location);
+         
             setLoadingState()
             fetch(`/forecast/?lat=${session.location.lat.toFixed(3)}&lon=${session.location.lon.toFixed(3)}`, {
             headers : { 
@@ -43,9 +43,12 @@ const Weather = () => {
             unsetLoadingState();
             }
         }) 
-    
+        } else {
+            window.alert("No location has been set")
+            navigate('/location/')
+        }
         ;
-  }, [state.location]); // eslint-disable-line
+  }, []); // eslint-disable-line
 
 
     if (!state.hasLoaded){
@@ -53,10 +56,11 @@ const Weather = () => {
             <Spinner />
         )
     } else {
+        
         return (
             <Wrapper> 
-                <h2>Weather Forecast for Latitude: {session.location.lat.toFixed(3)} & Longitude: {session.location.lon.toFixed(3)}</h2>
-            {state.forecast.map((day) => {
+                <h2>Weather Forecast for Latitude: {state.location.lat.toFixed(3)} & Longitude: {state.location.lon.toFixed(3)}</h2>
+            {forecast?.map((day) => {
                 
                 return (
                     <div key={day.date}>
