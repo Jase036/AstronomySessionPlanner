@@ -1,3 +1,4 @@
+// import Mongo driver, options and dotenv
 const {MongoClient} = require('mongodb');
 
 require('dotenv').config();
@@ -8,8 +9,13 @@ const options = {
     useUnifiedTopology: true,
 };
 
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+//import node fetch
+const fetch = (...args) => import('node-fetch')
+.then(({default: fetch}) => fetch(...args));
 
+//grabs the astro catalog from the public API sets the _id,  
+//adds a link to more info in the object and uploads it to Mongo
+// One time use...
 const importAstroCatalog = async () => {
     try {
         
