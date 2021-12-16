@@ -10,7 +10,7 @@ import Globalstyles from "./Globalstyles";
 import Catalog from './Catalog/Catalog';
 import Header from './Header/Header';
 import Home from './HomePage/Home';
-
+import Error from './Error';
 
 const App = () => {
   return (
@@ -24,6 +24,7 @@ const App = () => {
           <Route path="/weather" element={<Weather />} />
           <Route path="/catalog" element={<Catalog/>} />
           <Route path="/schedule" element={<AstroPlan />} />
+          <Route path='*' element={<Error />} />
         </Routes>
       </Wrapper>
     </Router>

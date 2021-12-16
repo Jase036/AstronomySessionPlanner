@@ -76,7 +76,7 @@ const RenderDay = ({day, sg}) => {
                 <HourData>
                     {formattedTimeArray.map((timeSlot,i)=>{
                             return (
-                            <p key={Math.floor((Math.random()*10000)+1)}>{timeSlot}</p>
+                            <p key={Math.floor((Math.random()*100000000)+1)}>{timeSlot}</p>
                             )
                         })
                     }
@@ -86,9 +86,9 @@ const RenderDay = ({day, sg}) => {
                 <CloudsData>
                     { fillArray.map((timeSlotDetails, i)=>{
                             if (timeSlotDetails !== '') {
-                                return <p key={Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.cloudtotal_pct}</p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}>{timeSlotDetails.cloudtotal_pct}</p>
                             } else {
-                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}></p>
                             }
                         })
                     }
@@ -98,9 +98,9 @@ const RenderDay = ({day, sg}) => {
                 <PrecpData>
                     {fillArray.map((timeSlotDetails, i)=>{
                             if (timeSlotDetails !== '') {
-                                return <p key={Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.prob_precip_pct}</p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}>{timeSlotDetails.prob_precip_pct}</p>
                             } else {
-                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}></p>
                             }
                         })
                     }
@@ -110,9 +110,9 @@ const RenderDay = ({day, sg}) => {
                 <TempData>
                     {fillArray.map((timeSlotDetails, i)=>{
                             if (timeSlotDetails !== '') {
-                                return <p key={Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.temp_c}</p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}>{timeSlotDetails.temp_c}</p>
                             } else {
-                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}></p>
                             }
                         })
                     }
@@ -122,9 +122,9 @@ const RenderDay = ({day, sg}) => {
                 <VisibData>
                     {fillArray.map((timeSlotDetails, i)=>{
                             if (timeSlotDetails !== '') {
-                                return <p key={Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.vis_km}</p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}>{timeSlotDetails.vis_km}</p>
                             } else {
-                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}></p>
                             }
                         })
                     }
@@ -134,9 +134,9 @@ const RenderDay = ({day, sg}) => {
                 <DewData>
                     {fillArray.map((timeSlotDetails, i)=>{
                             if (timeSlotDetails !== '') {
-                                return <p key={Math.floor((Math.random()*10000)+1)}>{timeSlotDetails.dewpoint_c}</p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}>{timeSlotDetails.dewpoint_c}</p>
                             } else {
-                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}></p>
                             }
                         })
                     }
@@ -150,7 +150,7 @@ const RenderDay = ({day, sg}) => {
                             if (timeSlotDetails !== '') {
                                 return <p key={timeSlotDetails.time}>{timeSlotDetails.windspd_kmh} <br /> {timeSlotDetails.winddir_compass}</p>
                             } else {
-                                return <p key={Math.floor((Math.random()*10000)+1)}></p>
+                                return <p key={Math.floor((Math.random()*100000000)+1)}></p>
                             }
                         })
                     }

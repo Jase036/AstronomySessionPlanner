@@ -11,7 +11,7 @@ import { AstroProvider } from "./components/context/AstroContext";
 ReactDOM.render(
   
   <Auth0Provider
-    domain= {process.env.REACT_APP_AUTH0_DOMAIN}
+    domain='dev-3v3jf16o.us.auth0.com'
     clientId={process.env.REACT_APP_AUTH0_ID}
     redirectUri={window.location.origin}
   >

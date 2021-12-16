@@ -21,11 +21,11 @@ export const columns = [
     },
     {
         field: 'v_mag',
-        headerName: 'Apparent Magnitude',
+        headerName: 'Magnitude',
         numeric: true,
         disablePadding: false,
         editable: false,
-        width: 100, 
+        width: 120, 
         valueGetter: (params) => params.row.fields.v_mag,
     },
     {
@@ -54,5 +54,16 @@ export const columns = [
         editable: false,
         width: 140, 
         valueGetter: (params) => params.row.fields.dec,
+    },
+    {
+        field: 'web',
+        headerName: 'More Info',
+        renderCell: (params) => {
+            return <a href={`${params.row.web}`} target="_blank" rel="noreferrer">{params.row.fields.name}</a>;
+        },
+        numeric: false,
+        disablePadding: true,
+        editable: false,
+        width: 160, 
     },
 ];

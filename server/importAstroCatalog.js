@@ -17,7 +17,7 @@ const importAstroCatalog = async () => {
         const response = await fetch(astroCatalog);
         const rawAstroData = await response.json();
 
-        const astroData = rawAstroData.records.map(({recordid: _id, ...rest}) => ({_id, ...rest}));
+        const astroData = rawAstroData.records.map((e) => ({...e, _id: e.recordid,  web: `http://spider.seds.org/ngc/ngc.cgi?CatalogNumber=${e.fields.name}`}));
 
         // creates a new client
         const client = new MongoClient(MONGO_URI, options);

@@ -8,6 +8,9 @@ const options = {
     useUnifiedTopology: true,
 };
 
+//import node fetch
+const fetch = (...args) => import('node-fetch')
+.then(({default: fetch}) => fetch(...args));
 
 // import arguably the most complex part of this app
 // this calculates which objects will be visible in the night sky

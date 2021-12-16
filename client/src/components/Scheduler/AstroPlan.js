@@ -13,6 +13,7 @@ import 'dhtmlx-scheduler/codebase/dhtmlxscheduler_material.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserContext } from '../context/UserContext';
 import { AstroContext } from '../context/AstroContext';
+import { useNavigate } from 'react-router-dom';
 
 
 //Create a window object - required by the DHTMLX library.
@@ -23,10 +24,17 @@ let schedulerContainer=''
 
 //This component initializes the week scheduler
 const AstroPlan = () => {
-    const{ user, isAuthenticated } = useAuth0();
+    const{ user, isAuthenticated, isLoading } = useAuth0();
     const { setLoadingState, unsetLoadingState } = useContext(UserContext);
     const { plan, setPlan } = useContext(AstroContext);
     
+    let navigate = useNavigate()
+
+    useEffect(() => {
+        if (!isLoading && !isAuthenticated) {
+            navigate('/')
+        }
+    }, [isLoading]); // eslint-disable-line
 
     //  fetch the weather and astro plans on mount
     useEffect(() => {
@@ -44,7 +52,6 @@ const AstroPlan = () => {
             }
         })
         } 
-
 
         //attach all the listeners we need
         scheduler.attachEvent("onBeforeDrag", block_readonly)

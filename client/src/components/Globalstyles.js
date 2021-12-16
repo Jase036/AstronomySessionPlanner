@@ -77,6 +77,10 @@ export default createGlobalStyle`
     div.dhtmlx_modal_box.dhtmlx-alert span {
         color:#555 !important
     }
+
+    svg.MuiSvgIcon-root {
+        color: #fff;
+    }
     li.MuiMenuItem-root {
         color: #555
     }
