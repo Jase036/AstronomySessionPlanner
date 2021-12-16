@@ -161,5 +161,6 @@ const Search = styled.input`
   border-radius: 5px;
   font-size: 16px;
   padding: 0 5px;
+  color: #333;
 `
 export default LocMap

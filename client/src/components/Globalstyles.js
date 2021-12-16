@@ -84,4 +84,8 @@ export default createGlobalStyle`
     li.MuiMenuItem-root {
         color: #555
     }
+
+    .pac-container.pac-logo .pac-item span {
+        color: #777
+    }
 `;
