@@ -32,10 +32,10 @@ const getWeather = async (req, res) => {
         let dataAstro = await db.collection("sg-weather").find().toArray();
         
         // if StormGlass is older than 3 days we get a new one
-        let retrieveDate = Moment(dataAstro[0].time)
+        let retrieveDate = Moment(dataAstro[0]?.time)
         let currentDate = Moment ()
         let difference = currentDate.diff(retrieveDate, 'days')
-        if (difference > 3){
+        if (difference > 3 ){
             
             const astronomyForecastRequest = `https://api.stormglass.io/v2/astronomy/point?lat=${lat}&lng=${lon}`
             const responseAstro = await fetch(astronomyForecastRequest, {headers: {
