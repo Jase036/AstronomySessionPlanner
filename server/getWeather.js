@@ -35,7 +35,7 @@ const getWeather = async (req, res) => {
         let retrieveDate = Moment(dataAstro[0]?.time)
         let currentDate = Moment ()
         let difference = currentDate.diff(retrieveDate, 'days')
-        if (difference > 3 ){
+        if (dataAstro.length === 0 || difference > 3 ){
             
             const astronomyForecastRequest = `https://api.stormglass.io/v2/astronomy/point?lat=${lat}&lng=${lon}`
             const responseAstro = await fetch(astronomyForecastRequest, {headers: {
